@@ -97,6 +97,7 @@
     <div class="video-container" id="videoContainer">
         <iframe 
             class="bilibili-iframe"
+            id="bilibiliIframe"
             src=""
             allowfullscreen>
         </iframe>
@@ -112,7 +113,7 @@
             videoContainer.classList.add('active');
             
             // 设置B站视频链接（使用BV1GJ411x7h7）
-            const iframe = document.querySelector('.bilibili-iframe');
+            const iframe = document.getElementById('bilibiliIframe');
             iframe.src = "//player.bilibili.com/player.html?bvid=BV1GJ411x7h7&autoplay=1&high_quality=1&danmaku=0&page=1";
             
             // 点击后让整个页面变暗
@@ -124,6 +125,24 @@
             } catch(e) {
                 console.log("全屏API不支持:", e);
             }
+            
+            // 监听iframe加载完成
+            iframe.onload = function() {
+                // 使用B站播放器API设置音量
+                try {
+                    // 等待一段时间确保播放器完全加载
+                    setTimeout(() => {
+                        const player = document.getElementById('bilibiliIframe').contentWindow.document.querySelector('video');
+                        if (player) {
+                            player.volume = 1.0; // 1.0表示100%音量
+                        } else {
+                            console.log("无法找到视频元素");
+                        }
+                    }, 3000); // 延迟3秒确保播放器完全加载
+                } catch(e) {
+                    console.log("设置音量失败:", e);
+                }
+            };
         });
     </script>
 </body>
