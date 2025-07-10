@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>警告提示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warning: '#FF6B35',
+                        confirm: '#00A1D6',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .fullscreen-iframe {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                border: none;
+                z-index: 100;
+            }
+            .warning-container {
+                transition: all 0.5s ease-out;
+            }
+            .fade-out {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div id="warningBox" class="warning-container bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-auto flex flex-col items-center">
+        <div class="w-20 h-20 rounded-full bg-warning/10 flex items-center justify-center mb-6">
+            <i class="fa fa-exclamation-triangle text-4xl text-warning"></i>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">警告</h2>
+        <p class="text-xl text-gray-600 mb-8 text-center">不得拍照</p>
+        
+        <button id="confirmBtn" class="bg-confirm hover:bg-confirm/90 text-white font-medium py-3 px-8 rounded-lg transition-all transform hover:scale-105">
+            确定
+        </button>
+    </div>
+    
+    <div id="bilibiliContainer" class="hidden"></div>
+
+    <script>
+        const warningBox = document.getElementById('warningBox');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const bilibiliContainer = document.getElementById('bilibiliContainer');
+        
+        confirmBtn.addEventListener('click', async () => {
+            // 隐藏警告框
+            warningBox.classList.add('fade-out');
+            setTimeout(() => {
+                warningBox.style.display = 'none';
+                
+                // 使用B站官方播放器嵌入方式
+                const iframe = document.createElement('iframe');
+                iframe.src = '//player.bilibili.com/player.html?bvid=BV1GJ411x7h7&autoplay=1&high_quality=1&danmaku=0&page=1&t=4';
+                iframe.className = 'fullscreen-iframe';
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('allow', 'autoplay; fullscreen');
+                
+                bilibiliContainer.appendChild(iframe);
+                bilibiliContainer.classList.remove('hidden');
+                
+                // 由于B站播放器内部有全屏控制，我们不需要额外处理全屏
+                // 用户可以通过B站播放器自带的控制栏进入全屏
+            }, 500);
+        });
+    </script>
+</body>
+</html>
